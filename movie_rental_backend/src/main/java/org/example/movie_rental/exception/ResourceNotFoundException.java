@@ -1,0 +1,7 @@
+package org.example.movie_rental.exception;
+
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String resource, Object id) {
+        super(resource + " not found with id: " + id);
+    }
+}

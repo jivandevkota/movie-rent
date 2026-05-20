@@ -1,0 +1,62 @@
+# === Backend: Spring Boot / Java / Maven ===
+target/
+*.class
+*.jar
+*.war
+*.log
+*.iml
+*.ipr
+*.iws
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# === Frontend: Angular / Node ===
+node_modules/
+dist/
+tmp/
+out-tsc/
+bazel-out/
+*.log
+npm-debug.log
+yarn-error.log
+.angular/cache/
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+testem.log
+typings/
+.history/
+
+# === IDEs & Editors ===
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# === Misc ===
+*.pid
+*.seed
+*.pid.lock
+HELP.md

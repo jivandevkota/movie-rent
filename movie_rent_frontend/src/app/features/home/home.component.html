@@ -1,0 +1,109 @@
+<mat-drawer-container class="container">
+
+  <!-- SIDEBAR -->
+  <mat-drawer mode="side" opened class="sidebar">
+    <mat-nav-list class="nav-list">
+
+      <a mat-list-item class="category-item" [class.active]="selectedCategory === null" (click)="loadFilms()">
+        <mat-icon class="nav-icon">movie_filter</mat-icon>
+        <span class="nav-label">All Movies</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a mat-list-item class="category-item" *ngFor="let category of categories" [class.active]="selectedCategory === category.id" (click)="loadByCategory(category.id)">
+        <mat-icon class="nav-icon">local_movies</mat-icon>
+        <span class="nav-label">{{ category.name }}</span>
+      </a>
+
+    </mat-nav-list>
+  </mat-drawer>
+
+  <!-- MAIN CONTENT -->
+  <mat-drawer-content class="main-content">
+
+    <div class="content-wrapper">
+
+      <!-- CENTERED BIG SEARCH -->
+      <div class="search-container">
+        <div class="search-box">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input type="text" class="search-input" placeholder="Search movies by title..."
+            [(ngModel)]="searchText" (keyup.enter)="searchFilms()">
+          <button mat-flat-button color="primary" class="search-btn" (click)="searchFilms()">Search</button>
+        </div>
+      </div>
+      <div>
+        <span>Search: {{searchText}} </span>
+        <hr>
+      </div>
+      <!-- RESULTS COUNT -->
+      <div class="results-bar" *ngIf="totalElements > 0">
+        <span class="results-text">Showing {{ films.length }} of {{ totalElements }} films</span>
+      </div>
+
+      <!-- MOVIES GRID: Light, no heavy cards -->
+      <div class="movie-grid" *ngIf="films.length > 0">
+        <div class="movie-item" *ngFor="let film of films" (click)="openFilmDetails(film.filmId)">
+          <div class="image-wrapper">
+            <img [src]="film.imageUrl" [alt]="film.title" loading="lazy">
+            <div class="hover-overlay">
+              <mat-icon>visibility</mat-icon>
+              <span>View Details</span>
+            </div>
+          </div>
+          <div class="movie-info">
+            <div class="movie-meta">
+              <span class="film-id">#{{ film.filmId }}</span>
+              <span class="category-badge">{{ film.categoryName || 'Movie' }}</span>
+            </div>
+            <h3 class="movie-title">{{ film.title }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY -->
+      <div class="empty-state" *ngIf="films.length === 0">
+        <mat-icon class="empty-icon">movie</mat-icon>
+        <p>No movies found</p>
+      </div>
+
+      <!-- PAGINATION: Light, thin arrows, white hover -->
+      <div class="pagination-wrapper" *ngIf="totalPages > 1">
+        <div class="pagination-controls">
+
+          <button mat-icon-button class="page-btn" (click)="firstPage()" [disabled]="page === 0">
+            <mat-icon>keyboard_double_arrow_left</mat-icon>
+          </button>
+
+          <button mat-icon-button class="page-btn" (click)="prevPage()" [disabled]="page === 0">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+
+          <div class="page-info">
+            <span class="page-label">Page</span>
+            <span class="page-current">{{ page + 1 }}</span>
+            <span class="page-separator">of</span>
+            <span class="page-total">{{ totalPages }}</span>
+          </div>
+
+          <div class="goto-section">
+            <span class="goto-label">Go to</span>
+            <input type="number" class="goto-input" min="1" [max]="totalPages" [(ngModel)]="gotoPageNumber">
+            <button mat-stroked-button class="goto-btn" (click)="goToPage()">Go</button>
+          </div>
+
+          <button mat-icon-button class="page-btn" (click)="nextPage()" [disabled]="page + 1 >= totalPages">
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+
+          <button mat-icon-button class="page-btn" (click)="lastPage()" [disabled]="page + 1 >= totalPages">
+            <mat-icon>keyboard_double_arrow_right</mat-icon>
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
