@@ -1,0 +1,54 @@
+<div class="payments-container">
+  <button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Movies</span>
+  </button>
+
+  <h1 class="page-title">Payment History</h1>
+  <p class="page-subtitle">All transactions from your rentals</p>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+    <p>Loading payments...</p>
+  </div>
+
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error">
+
+    <div class="stats-row" *ngIf="payments.length > 0">
+      <div class="stat-card">
+        <div class="stat-value">{{ payments.length }}</div>
+        <div class="stat-label">Transactions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${{ getTotal() }}</div>
+        <div class="stat-label">Total Spent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ getLatestDate() }}</div>
+        <div class="stat-label">Last Payment</div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="payments.length === 0">
+      <mat-icon class="empty-icon">payments</mat-icon>
+      <p>No payments yet.</p>
+      <button mat-flat-button color="primary" (click)="goBack()">Browse Movies</button>
+    </div>
+
+    <div class="payment-list" *ngIf="payments.length > 0">
+      <div class="payment-card" *ngFor="let p of payments">
+        <div class="payment-marker">
+          <mat-icon>receipt</mat-icon>
+        </div>
+        <div class="payment-info">
+          <span class="payment-film">{{ p.filmTitle }}</span>
+          <span class="payment-meta">{{ p.paymentDate | date:'MMM d, yyyy h:mm a' }} &middot; Payment #{{ p.paymentId }}</span>
+        </div>
+        <span class="payment-amount">${{ p.amount }}</span>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

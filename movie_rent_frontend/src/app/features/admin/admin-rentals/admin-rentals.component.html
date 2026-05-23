@@ -1,0 +1,108 @@
+<div class="page-container">
+  <button class="back-btn" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Dashboard</span>
+  </button>
+  <div class="header-row">
+    <div>
+      <h1 class="page-title">Rental Management</h1>
+      <p class="page-subtitle">Track all rentals, returns, and overdue items</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button mat-stroked-button [class.active-filter]="filter === 'all'" (click)="filterChanged('all')">All</button>
+    <button mat-stroked-button [class.active-filter]="filter === 'active'" (click)="filterChanged('active')">Active</button>
+    <button mat-stroked-button [class.active-filter]="filter === 'overdue'" (click)="filterChanged('overdue')">Overdue</button>
+    <button mat-stroked-button [class.active-filter]="filter === 'returned'" (click)="filterChanged('returned')">Returned</button>
+    <button mat-flat-button class="counter-rental-btn" (click)="openRentalModal()">+ Process Rental</button>
+    <span style="margin-left:auto;font-size:12px;color:#888;">{{ totalElements }} total</span>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+    <p>Loading rentals...</p>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && filteredRentals.length === 0">
+    <p>No rentals found.</p>
+  </div>
+
+  <div class="table-scroll"><table class="data-table" *ngIf="!loading && filteredRentals.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Film</th>
+        <th>Customer</th>
+        <th>Rented</th>
+        <th>Returned</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of filteredRentals" [class.overdue]="r.overdue">
+        <td>#{{ r.rentalId }}</td>
+        <td style="font-weight:600;">{{ r.filmTitle }}</td>
+        <td>{{ r.customerName }}</td>
+        <td>{{ r.rentalDate | date:'MMM d, yyyy' }}</td>
+        <td>{{ r.returnDate ? (r.returnDate | date:'MMM d, yyyy') : '—' }}</td>
+        <td>
+          <span class="status-badge" [class.active]="r.active && !r.overdue" [class.overdue]="r.overdue" [class.returned]="!r.active">
+            {{ r.overdue ? 'Overdue' : (r.active ? 'Active' : 'Returned') }}
+          </span>
+        </td>
+        <td>
+          <button mat-stroked-button *ngIf="r.active" (click)="processReturn(r)" [disabled]="returningId === r.rentalId">
+            {{ returningId === r.rentalId ? 'Processing...' : 'Process Return' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="pagination" *ngIf="totalPages > 1 && filteredRentals.length > 0">
+    <button mat-stroked-button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+    <span class="page-info">Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button mat-stroked-button (click)="nextPage()" [disabled]="page + 1 >= totalPages || filteredRentals.length < 20">Next</button>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showRentalModal" (click)="closeRentalModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">Process Rental</h2>
+      <button mat-icon-button (click)="closeRentalModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Customer</label>
+        <select class="form-select" [(ngModel)]="selectedCustomerId">
+          <option [value]="null" disabled>Select customer...</option>
+          <option *ngFor="let c of customers" [value]="c.id">{{ c.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Film</label>
+        <select class="form-select" [(ngModel)]="selectedFilmId">
+          <option [value]="null" disabled>Select film...</option>
+          <option *ngFor="let f of films" [value]="f.id">{{ f.title }}</option>
+        </select>
+      </div>
+
+      <div class="error-msg" *ngIf="rentalError">{{ rentalError }}</div>
+      <div class="success-msg" *ngIf="rentalSuccess">{{ rentalSuccess }}</div>
+    </div>
+
+    <div class="modal-footer">
+      <button mat-stroked-button (click)="closeRentalModal()">Cancel</button>
+      <button mat-flat-button (click)="submitRental()" [disabled]="!selectedCustomerId || !selectedFilmId || renting">
+        {{ renting ? 'Processing...' : 'Rent Film' }}
+      </button>
+    </div>
+  </div>
+</div>

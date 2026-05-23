@@ -1,0 +1,71 @@
+<div class="profile-page">
+
+  <button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back</span>
+  </button>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+  <div class="profile" *ngIf="profile && !loading">
+
+    <!-- HEADER -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <span>{{ profile.firstName?.charAt(0) }}{{ profile.lastName?.charAt(0) }}</span>
+      </div>
+      <div class="profile-head-info">
+        <h1>{{ profile.firstName }} {{ profile.lastName }}</h1>
+        <p>{{ profile.email }}</p>
+        <span class="badge" [class.active]="profile.active" [class.inactive]="!profile.active">
+          {{ profile.active ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="profile-stats">
+      <div class="ps-item">
+        <span class="ps-num">{{ profile.totalRentals }}</span>
+        <span class="ps-lbl">Total Rentals</span>
+      </div>
+      <div class="ps-item">
+        <span class="ps-num">{{ profile.activeRentals }}</span>
+        <span class="ps-lbl">Active Now</span>
+      </div>
+      <div class="ps-item">
+        <span class="ps-num">${{ profile.totalSpent }}</span>
+        <span class="ps-lbl">Total Spent</span>
+      </div>
+      <div class="ps-item">
+        <span class="ps-num">{{ profile.createDate | date:'MMM yyyy' }}</span>
+        <span class="ps-lbl">Joined</span>
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="profile-links">
+      <a class="pl-link" routerLink="/cart">
+        <mat-icon>shopping_cart</mat-icon>
+        <div><div class="pl-label">Cart</div><div class="pl-desc">View your cart</div></div>
+      </a>
+      <a class="pl-link" routerLink="/orders">
+        <mat-icon>receipt_long</mat-icon>
+        <div><div class="pl-label">Orders</div><div class="pl-desc">Order history</div></div>
+      </a>
+      <a class="pl-link" routerLink="/my-rentals">
+        <mat-icon>movie</mat-icon>
+        <div><div class="pl-label">Rentals</div><div class="pl-desc">Active &amp; past rentals</div></div>
+      </a>
+      <a class="pl-link" routerLink="/payments">
+        <mat-icon>payments</mat-icon>
+        <div><div class="pl-label">Payments</div><div class="pl-desc">Payment history</div></div>
+      </a>
+    </div>
+
+  </div>
+</div>

@@ -1,76 +1,100 @@
 <div class="detail-container" *ngIf="!loading && film">
 
-    <button mat-button class="back-btn" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-      <span>Back to Movies</span>
-    </button>
-  
-    <div class="detail-card">
-  
-      <div class="detail-image-section">
-        <div class="image-frame">
-          <img [src]="film.imageUrl" [alt]="film.title">
+  <button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Movies</span>
+  </button>
+
+  <div class="detail-card">
+
+    <!-- LEFT: Image + Description -->
+    <div class="detail-image-section">
+      <div class="image-frame">
+        <img [src]="film.imageUrl" [alt]="film.title">
+      </div>
+      <p class="film-description">{{ film.description }}</p>
+    </div>
+
+    <!-- RIGHT: All Details -->
+    <div class="detail-info-section">
+
+      <div class="title-row">
+        <h1 class="film-title">{{ film.title }}</h1>
+        <span class="rating-badge">{{ film.rating }}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-item">{{ film.categoryName }}</span>
+        <span class="meta-item">{{ film.releaseYear }}</span>
+        <span class="meta-item">{{ film.length }} min</span>
+        <span class="meta-item" *ngIf="film.languageName">{{ film.languageName }}</span>
+      </div>
+
+      <div class="specs-list">
+        <div class="spec-row">
+          <span class="spec-label">Rental Rate</span>
+          <span class="spec-value">${{ film.rentalRate }}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Rental Duration</span>
+          <span class="spec-value">{{ film.rentalDuration }} days</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Replacement Cost</span>
+          <span class="spec-value">${{ film.replacementCost }}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Special Features</span>
+          <span class="spec-value">{{ film.specialFeatures || 'None' }}</span>
+        </div>
+        <div class="spec-row" *ngIf="film.totalRentals !== undefined">
+          <span class="spec-label">Times Rented</span>
+          <span class="spec-value">{{ film.totalRentals }}</span>
+        </div>
+        <div class="spec-row" *ngIf="film.availableCopies !== undefined">
+          <span class="spec-label">Available</span>
+          <span class="spec-value" [class.low-stock]="film.availableCopies < 3">{{ film.availableCopies }} copy{{ film.availableCopies === 1 ? '' : 'ies' }}</span>
         </div>
       </div>
-  
-      <div class="detail-info-section">
-  
-        <div class="info-header">
-          <div class="title-row">
-            <h1 class="film-title">{{ film.title }}</h1>
-            <span class="rating-badge">{{ film.rating }}</span>
-          </div>
-          <div class="meta-chips">
-            <span class="chip chip-blue">{{ film.categoryName }}</span>
-            <span class="chip chip-gray">{{ film.releaseYear }}</span>
-            <span class="chip chip-gray">{{ film.length }} min</span>
-          </div>
+
+      <div class="actors-section" *ngIf="film.actors && film.actors.length > 0">
+        <h3 class="section-title">Cast</h3>
+        <div class="actor-grid">
+          <a class="actor-card" *ngFor="let actor of film.actors" [routerLink]="['/actor', actor.actorId]">
+            <div class="actor-photo">
+              <img [src]="actor.imageUrl" [alt]="actor.name" loading="lazy">
+            </div>
+            <span class="actor-name">{{ actor.name }}</span>
+          </a>
         </div>
-  
-        <p class="film-description">{{ film.description }}</p>
-  
-        <div class="specs-grid">
-          <div class="spec-item">
-            <span class="spec-label">Rental Rate</span>
-            <span class="spec-value highlight-green">${{ film.rentalRate }}</span>
-          </div>
-          <div class="spec-item">
-            <span class="spec-label">Rental Duration</span>
-            <span class="spec-value">{{ film.rentalDuration }} days</span>
-          </div>
-          <div class="spec-item">
-            <span class="spec-label">Replacement Cost</span>
-            <span class="spec-value">${{ film.replacementCost }}</span>
-          </div>
-          <div class="spec-item">
-            <span class="spec-label">Special Features</span>
-            <span class="spec-value">{{ film.specialFeatures || 'None' }}</span>
-          </div>
-        </div>
-  
-        <div class="actors-section" *ngIf="film.actors && film.actors.length > 0">
-          <h3 class="section-title">Cast</h3>
-          <div class="actors-list">
-            <span class="actor-tag" *ngFor="let actor of film.actors">{{ actor }}</span>
-          </div>
-        </div>
-  
-        <div class="action-section">
+      </div>
+
+      <div class="action-section">
+        <div class="action-buttons">
           <div class="quantity-selector">
             <button mat-icon-button (click)="quantity = quantity > 1 ? quantity - 1 : 1"><mat-icon>remove</mat-icon></button>
             <span class="quantity-value">{{ quantity }}</span>
             <button mat-icon-button (click)="quantity = quantity + 1"><mat-icon>add</mat-icon></button>
           </div>
-          <button mat-flat-button color="primary" class="cart-btn" (click)="addToCart()">
-            <mat-icon>shopping_cart</mat-icon> Add to Cart
+          <button mat-flat-button class="cart-btn" (click)="addToCart()" [disabled]="cartLoading">
+            <mat-icon>shopping_cart</mat-icon> {{ cartLoading ? 'Adding...' : 'Add to Cart' }}
+          </button>
+          <button mat-stroked-button class="rent-btn" *ngIf="isLoggedIn()" (click)="rentFilm()" [disabled]="rentLoading">
+            {{ rentLoading ? 'Renting...' : 'Rent Now' }}
           </button>
         </div>
-  
+        <div class="action-msg" *ngIf="cartMsg" [class.success]="cartSuccess" [class.error]="!cartSuccess">{{ cartMsg }}</div>
+        <div class="action-msg" *ngIf="rentMsg" [class.success]="rentSuccess" [class.error]="!rentSuccess">
+          {{ rentMsg }}
+          <span class="action-link" *ngIf="rentSuccess" (click)="goToMyRentals()">View My Rentals</span>
+        </div>
       </div>
+
     </div>
   </div>
-  
-  <div class="loading-state" *ngIf="loading">
-    <mat-spinner diameter="48"></mat-spinner>
-    <p>Loading movie details...</p>
-  </div>
+</div>
+
+<div class="loading-state" *ngIf="loading">
+  <mat-spinner diameter="48"></mat-spinner>
+  <p>Loading movie details...</p>
+</div>

@@ -1,1 +1,23 @@
-<router-outlet></router-outlet>
+<nav class="topnav">
+  <div class="nav-inner">
+    <a class="nav-brand" routerLink="/">MovieRent</a>
+    <div class="nav-links">
+      <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a>
+      <a class="nav-link" routerLink="/cart" routerLinkActive="active" *ngIf="isCustomer">Cart</a>
+      <a class="nav-link" routerLink="/orders" routerLinkActive="active" *ngIf="isCustomer">Orders</a>
+      <a class="nav-link" routerLink="/my-rentals" routerLinkActive="active" *ngIf="isCustomer">Rentals</a>
+      <a class="nav-link" routerLink="/payments" routerLinkActive="active" *ngIf="isCustomer">Payments</a>
+      <a class="nav-link" routerLink="/admin" routerLinkActive="active" *ngIf="isStaff">Admin</a>
+    </div>
+    <div class="nav-auth">
+      <a class="nav-greeting" routerLink="/profile" *ngIf="isCustomer">{{ loggedInName }}</a>
+      <a class="nav-greeting" routerLink="/admin/profile" *ngIf="isStaff">{{ loggedInName }}</a>
+      <a class="nav-link" routerLink="/login" *ngIf="!isLoggedIn">Sign In</a>
+      <a class="nav-link" routerLink="/register" *ngIf="!isLoggedIn">Register</a>
+      <a class="nav-link nav-logout" (click)="logout()" *ngIf="isLoggedIn">Sign Out</a>
+    </div>
+  </div>
+</nav>
+<main class="main-area">
+  <router-outlet></router-outlet>
+</main>

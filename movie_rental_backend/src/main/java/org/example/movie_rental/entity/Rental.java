@@ -42,4 +42,10 @@ public class Rental {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Payment> payments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private RentalOrder order;
 }

@@ -1,0 +1,31 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <h1 class="login-title">Staff Login</h1>
+    <p class="login-subtitle">Admin &amp; staff access only</p>
+    <div class="staff-badge">Staff Portal</div>
+
+    <form (ngSubmit)="onLogin()" class="login-form">
+      <div class="field-group">
+        <label class="field-label" for="email">Email</label>
+        <input type="email" id="email" class="field-input"
+          [(ngModel)]="email" name="email" placeholder="e.g. Mike.Hillyer@sakilastaff.com" required>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="password">Password</label>
+        <input type="password" id="password" class="field-input"
+          [(ngModel)]="password" name="password" placeholder="Enter password" required>
+      </div>
+
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="login-btn" [disabled]="loading">
+        {{ loading ? 'Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <p class="back-link">
+      <a routerLink="/login">Back to Customer Login</a>
+    </p>
+  </div>
+</div>

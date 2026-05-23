@@ -1,5 +1,6 @@
 package org.example.movie_rental.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -37,6 +38,10 @@ public class Customer {
     @Column(name = "active", nullable = false)
     private Boolean active;
 
+    @JsonIgnore
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "create_date", nullable = false)
     private LocalDateTime createDate;
 
@@ -52,4 +57,14 @@ public class Customer {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Rental> rentals;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Cart cart;
+
+    @OneToMany(mappedBy = "customer")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<RentalOrder> orders;
 }

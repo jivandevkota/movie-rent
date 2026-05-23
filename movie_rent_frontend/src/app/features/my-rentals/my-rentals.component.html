@@ -1,0 +1,70 @@
+<div class="rentals-container">
+
+  <button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Movies</span>
+  </button>
+
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">My Rentals</h1>
+      <p class="page-subtitle" *ngIf="customerName">{{ customerName }} &middot; {{ activeRentals.length }} active, {{ pastRentals.length }} returned</p>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error">
+
+    <div class="empty-state" *ngIf="rentals.length === 0">
+      <mat-icon class="empty-icon">movie</mat-icon>
+      <p>No rentals yet. Browse movies to rent one!</p>
+      <button mat-flat-button class="primary-btn" (click)="goBack()">Browse Movies</button>
+    </div>
+
+    <div class="section" *ngIf="activeRentals.length > 0">
+      <h2 class="section-title">Currently Rented ({{ activeRentals.length }})</h2>
+      <div class="rental-list">
+        <div class="rental-card" *ngFor="let r of activeRentals">
+          <img [src]="r.imageUrl" [alt]="r.filmTitle" class="rental-thumb" loading="lazy">
+          <div class="rental-info">
+            <span class="rental-film">{{ r.filmTitle }}</span>
+            <div class="rental-meta">
+              <span>Rented: {{ r.rentalDate | date:'MMM d, yyyy' }}</span>
+              <span>{{ daysSince(r.rentalDate) }} days ago</span>
+            </div>
+          </div>
+          <div class="rental-status">
+            <span class="status-tag active">Active</span>
+            <button mat-stroked-button class="return-btn"
+              (click)="returnFilm(r.rentalId)" [disabled]="returningId === r.rentalId">
+              {{ returningId === r.rentalId ? 'Returning...' : 'Return Now' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" *ngIf="pastRentals.length > 0">
+      <h2 class="section-title">Returned ({{ pastRentals.length }})</h2>
+      <div class="rental-list">
+        <div class="rental-card returned" *ngFor="let r of pastRentals">
+          <img [src]="r.imageUrl" [alt]="r.filmTitle" class="rental-thumb" loading="lazy">
+          <div class="rental-info">
+            <span class="rental-film">{{ r.filmTitle }}</span>
+            <div class="rental-meta">
+              <span>Rented: {{ r.rentalDate | date:'MMM d, yyyy' }}</span>
+              <span>Returned: {{ r.returnDate | date:'MMM d, yyyy' }}</span>
+            </div>
+          </div>
+          <span class="status-tag returned">Returned</span>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

@@ -1,0 +1,109 @@
+.actor-page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+.back-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: none; border: 1px solid #ddd;
+  cursor: pointer; color: #555; font-size: 13px; font-weight: 500;
+  padding: 4px 16px; margin-bottom: 28px; height: 32px;
+}
+.back-btn:hover { background: #f5f5f5; color: #000; }
+
+.actor-profile {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #ddd;
+}
+
+.actor-photo-frame {
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #eee;
+  border: 2px solid #ddd;
+}
+.actor-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.actor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.actor-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.actor-film-count {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+  margin: 0 0 20px;
+}
+
+.film-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 16px;
+}
+
+.film-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.film-card:hover { opacity: 0.8; }
+
+.film-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+}
+.film-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.film-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.loading-state {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 60vh; gap: 16px; color: #888;
+}
+
+@media (max-width: 600px) {
+  .actor-profile { flex-direction: column; align-items: center; text-align: center; }
+  .actor-photo-frame { width: 100px; height: 100px; }
+  .film-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+}

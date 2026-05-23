@@ -1,0 +1,149 @@
+<div class="page-container">
+  <button class="back-btn" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Dashboard</span>
+  </button>
+  <div class="header-row">
+    <div>
+      <h1 class="page-title">Customer Management</h1>
+      <p class="page-subtitle">View all registered customers</p>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+    <p>Loading customers...</p>
+  </div>
+
+  <div style="font-size:12px;color:#888;margin-bottom:8px;" *ngIf="!loading">{{ totalElements }} total customers</div>
+
+  <div class="empty-state" *ngIf="!loading && customers.length === 0">
+    <p>No customers found.</p>
+  </div>
+
+  <div class="table-scroll"><table class="data-table" *ngIf="!loading && customers.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of customers">
+        <td>#{{ c.customerId }}</td>
+        <td class="name-cell">{{ c.firstName }} {{ c.lastName }}</td>
+        <td>{{ c.email }}</td>
+        <td>
+          <span class="status-badge" [class.active]="c.active" [class.inactive]="!c.active">
+            {{ c.active ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+        <td>{{ c.createDate | date:'MMM d, yyyy' }}</td>
+        <td>
+          <button mat-stroked-button (click)="viewDetails(c)">View</button>
+        </td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="pagination" *ngIf="totalPages > 1 && customers.length > 0">
+    <button mat-stroked-button (click)="prevPage()" [disabled]="page === 0 || customers.length < 20">Previous</button>
+    <span class="page-info">Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button mat-stroked-button (click)="nextPage()" [disabled]="page + 1 >= totalPages || customers.length < 20">Next</button>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" *ngIf="selectedCustomer" (click)="closeDetails()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ selectedCustomer.firstName }} {{ selectedCustomer.lastName }}</h2>
+      <button mat-icon-button (click)="closeDetails()"><mat-icon>close</mat-icon></button>
+    </div>
+
+    <div class="modal-body">
+      <div class="detail-actions" *ngIf="!editingCustomer">
+        <button mat-stroked-button (click)="startEdit()">Edit Customer</button>
+      </div>
+
+      <ng-container *ngIf="!editingCustomer">
+        <div class="customer-detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ selectedCustomer.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Status</span>
+            <span class="detail-value">{{ selectedCustomer.active ? 'Active' : 'Inactive' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Customer ID</span>
+            <span class="detail-value">#{{ selectedCustomer.customerId }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Created</span>
+            <span class="detail-value">{{ selectedCustomer.createDate | date:'MMM d, yyyy' }}</span>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="editingCustomer">
+        <div class="edit-form">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" [(ngModel)]="editData.firstName">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" [(ngModel)]="editData.lastName">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" [(ngModel)]="editData.email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">
+              <input type="checkbox" [(ngModel)]="editData.active"> Active
+            </label>
+          </div>
+          <div class="error-msg" *ngIf="saveError">{{ saveError }}</div>
+          <div class="edit-actions">
+            <button mat-stroked-button (click)="cancelEdit()">Cancel</button>
+            <button mat-flat-button class="primary-btn" (click)="saveEdit()" [disabled]="saving">
+              {{ saving ? 'Saving...' : 'Save' }}
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <h3 style="font-size:14px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 12px;">
+        Rental History ({{ customerRentals.length }})
+      </h3>
+
+      <div class="loading-state" *ngIf="rentalsLoading" style="padding:24px;">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
+
+      <div class="rental-list" *ngIf="!rentalsLoading">
+        <div class="rental-item" *ngFor="let r of customerRentals">
+          <span class="rental-film">{{ r.filmTitle }}</span>
+          <span class="rental-date">{{ r.rentalDate | date:'MMM d, yyyy' }}</span>
+          <span class="rental-badge" [class.active]="!r.returnDate" [class.returned]="!!r.returnDate">
+            {{ r.returnDate ? 'Returned' : 'Active' }}
+          </span>
+        </div>
+        <p style="text-align:center;color:#999;padding:24px;" *ngIf="customerRentals.length === 0">
+          No rental history.
+        </p>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button mat-stroked-button (click)="closeDetails()">Close</button>
+    </div>
+  </div>
+</div>

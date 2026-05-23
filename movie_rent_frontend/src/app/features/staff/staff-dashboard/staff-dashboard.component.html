@@ -1,0 +1,100 @@
+<div class="dashboard-container">
+  <div class="header-row">
+    <div class="header-left">
+      <h1>Dashboard</h1>
+      <p>Welcome, <a class="staff-name" routerLink="/admin/profile">{{ staffName }}</a></p>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-item"><span class="stat-num">{{ stats.totalCustomers }}</span><span class="stat-lbl">Customers</span></div>
+      <div class="stat-item"><span class="stat-num">{{ stats.totalFilms }}</span><span class="stat-lbl">Films</span></div>
+      <div class="stat-item"><span class="stat-num">{{ stats.activeRentals }}</span><span class="stat-lbl">Active Rentals <span class="overdue" *ngIf="stats.overdueRentals > 0">({{ stats.overdueRentals }} overdue)</span></span></div>
+      <div class="stat-item"><span class="stat-num">${{ stats.totalRevenue }}</span><span class="stat-lbl">Total Revenue</span></div>
+    </div>
+
+    <!-- Management -->
+    <div class="management-row">
+      <a class="mng-card" routerLink="/admin/films">
+        <mat-icon>movie</mat-icon>
+        <div><div class="mng-label">Films</div><div class="mng-desc">{{ stats.totalFilms }} movies</div></div>
+      </a>
+      <a class="mng-card" routerLink="/admin/actors">
+        <mat-icon>theater_comedy</mat-icon>
+        <div><div class="mng-label">Actors</div><div class="mng-desc">Cast members</div></div>
+      </a>
+      <a class="mng-card" routerLink="/admin/customers">
+        <mat-icon>people</mat-icon>
+        <div><div class="mng-label">Customers</div><div class="mng-desc">{{ stats.totalCustomers }} registered</div></div>
+      </a>
+      <a class="mng-card" routerLink="/admin/rentals">
+        <mat-icon>assignment</mat-icon>
+        <div><div class="mng-label">Rentals</div><div class="mng-desc">{{ stats.activeRentals }} active</div></div>
+      </a>
+      <a class="mng-card" routerLink="/admin/reports">
+        <mat-icon>bar_chart</mat-icon>
+        <div><div class="mng-label">Reports</div><div class="mng-desc">Analytics</div></div>
+      </a>
+    </div>
+
+    <!-- Analytics Grid -->
+    <div class="analytics-grid">
+
+      <div class="analytics-card">
+        <div class="card-header">Monthly Revenue</div>
+        <div class="card-body">
+          <div class="chart-bar" *ngFor="let row of monthlyRevenue">
+            <span class="c-label">{{ row.month }}</span>
+            <span class="c-track"><span class="c-fill" [style.width.%]="getBarWidth(row.revenue)"></span></span>
+            <span class="c-value">${{ row.revenue }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="analytics-card">
+        <div class="card-header">Top Actors</div>
+        <div class="card-body">
+          <div class="top-item" *ngFor="let a of topActors; let i = index">
+            <span class="top-rank">#{{ i + 1 }}</span>
+            <span class="top-name">{{ a.name }}</span>
+            <span class="top-count">{{ a.rentalCount }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="analytics-card" *ngIf="lowInventory.length > 0">
+        <div class="card-header">Zero Inventory <span class="zero-badge">{{ lowInventory.length }}</span></div>
+        <div class="card-body">
+          <div class="zero-item" *ngFor="let f of lowInventory.slice(0, 5)">
+            <span class="zero-title">{{ f.title }}</span>
+          </div>
+          <div class="zero-more" *ngIf="lowInventory.length > 5">+ {{ lowInventory.length - 5 }} more films with no copies</div>
+        </div>
+      </div>
+
+      <div class="analytics-card wide">
+        <div class="card-header">Recent Rentals</div>
+        <table class="recent-table">
+          <thead><tr><th>Film</th><th>Customer</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let r of recentRentals">
+              <td class="td-title">{{ r.filmTitle }}</td>
+              <td>{{ r.customerFirstName }} {{ r.customerLastName }}</td>
+              <td>{{ r.rentalDate | date:'MMM d, yyyy' }}</td>
+              <td><span class="status-tag" [class.s-active]="!r.returnDate" [class.s-returned]="r.returnDate">{{ r.returnDate ? 'Returned' : 'Active' }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </ng-container>
+</div>

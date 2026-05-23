@@ -1,0 +1,128 @@
+<div class="page-container">
+  <button class="back-btn" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Dashboard</span>
+  </button>
+
+  <div class="header-row">
+    <div>
+      <h1 class="page-title">Actor Management</h1>
+      <p class="page-subtitle">{{ actors.length }} actors in database</p>
+    </div>
+    <button mat-flat-button class="primary-btn" (click)="openCreate()">
+      <mat-icon>add</mat-icon> Add Actor
+    </button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search actors by name..." [(ngModel)]="searchText" (input)="filterActors()">
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+    <p>Loading actors...</p>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <div class="empty-state" *ngIf="filteredActors.length === 0">
+      <p>No actors found.</p>
+    </div>
+
+    <div class="actor-grid" *ngIf="filteredActors.length > 0">
+      <div class="actor-card" *ngFor="let a of filteredActors" (click)="viewActor(a)">
+        <div class="actor-photo">
+          <img [src]="a.imageUrl" [alt]="a.name" loading="lazy" (error)="a.imageUrl = 'assets/actor-placeholder.jpg'">
+        </div>
+        <div class="actor-info">
+          <span class="actor-name">{{ a.name }}</span>
+          <span class="actor-id">#{{ a.actorId }}</span>
+        </div>
+        <div class="actor-actions">
+          <button mat-stroked-button (click)="openEdit(a); $event.stopPropagation()">Edit</button>
+          <button mat-stroked-button color="warn" (click)="confirmDelete(a); $event.stopPropagation()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- Actor Detail Modal -->
+<div class="modal-overlay" *ngIf="selectedActor" (click)="closeView()">
+  <div class="modal-card wide" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ selectedActor.name }}</h2>
+      <button mat-icon-button (click)="closeView()"><mat-icon>close</mat-icon></button>
+    </div>
+    <div class="modal-body">
+      <div class="actor-profile" *ngIf="!statsLoading">
+        <div class="profile-photo">
+          <img [src]="selectedActor.imageUrl" [alt]="selectedActor.name" (error)="selectedActor.imageUrl = 'assets/actor-placeholder.jpg'">
+        </div>
+        <div class="profile-info">
+          <div class="profile-row" *ngIf="actorStats">
+            <span class="profile-label">Total Films</span>
+            <span class="profile-value">{{ actorStats.filmCount }}</span>
+          </div>
+          <div class="profile-row" *ngIf="actorStats">
+            <span class="profile-label">Total Rentals</span>
+            <span class="profile-value">{{ actorStats.totalRentals }}</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-label">Actor ID</span>
+            <span class="profile-value">#{{ selectedActor.actorId }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading-state" *ngIf="statsLoading" style="padding:24px;">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
+
+      <ng-container *ngIf="actorStats && !statsLoading">
+        <h3 class="section-title">Filmography ({{ actorStats.films.length }} films)</h3>
+        <div class="film-list">
+          <div class="film-item" *ngFor="let f of actorStats.films">
+            <img [src]="f.imageUrl" [alt]="f.title" class="film-thumb" loading="lazy">
+            <div class="film-info">
+              <span class="film-title">{{ f.title }}</span>
+              <span class="film-meta">{{ f.rentalCount }} rentals</span>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="actorStats.films.length === 0" style="padding:16px;">
+            No films associated with this actor.
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="modal-footer">
+      <button mat-stroked-button (click)="closeView()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal-overlay" *ngIf="showForm" (click)="closeForm()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ editing ? 'Edit Actor' : 'Add Actor' }}</h2>
+      <button mat-icon-button (click)="closeForm()"><mat-icon>close</mat-icon></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">First Name</label>
+        <input class="form-input" [(ngModel)]="formData.firstName" placeholder="First name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        <input class="form-input" [(ngModel)]="formData.lastName" placeholder="Last name">
+      </div>
+      <div class="error-msg" *ngIf="formError">{{ formError }}</div>
+    </div>
+    <div class="modal-footer">
+      <button mat-stroked-button (click)="closeForm()">Cancel</button>
+      <button mat-flat-button class="primary-btn" (click)="save()" [disabled]="saving">
+        {{ saving ? 'Saving...' : (editing ? 'Update' : 'Create') }}
+      </button>
+    </div>
+  </div>
+</div>

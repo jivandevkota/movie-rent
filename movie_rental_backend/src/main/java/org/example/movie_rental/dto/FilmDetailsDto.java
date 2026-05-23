@@ -7,6 +7,7 @@ public record FilmDetailsDto(
         String title,
         String description,
         String categoryName,
+        String languageName,
         Integer releaseYear,
         Integer rentalDuration,
         Float rentalRate,
@@ -14,6 +15,8 @@ public record FilmDetailsDto(
         Float replacementCost,
         String rating,
         String specialFeatures,
-        List<String> actors,
-        String imageUrl
+        List<ActorDto> actors,
+        String imageUrl,
+        long availableCopies,
+        long totalRentals
 ) {}

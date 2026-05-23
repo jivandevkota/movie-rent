@@ -1,0 +1,84 @@
+<div class="orders-container">
+
+  <button class="back-btn" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Movies</span>
+  </button>
+
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">My Orders</h1>
+      <p class="page-subtitle" *ngIf="customerName">{{ customerName }} &middot; {{ orders.length }} order{{ orders.length === 1 ? '' : 's' }}</p>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error">
+
+    <div class="empty-state" *ngIf="orders.length === 0">
+      <mat-icon class="empty-icon">receipt_long</mat-icon>
+      <p>No orders yet.</p>
+      <button mat-flat-button class="primary-btn" (click)="goBack()">Browse Movies</button>
+    </div>
+
+    <div class="order-list" *ngIf="orders.length > 0">
+      <div class="order-card" *ngFor="let order of orders">
+
+        <div class="order-summary" (click)="toggleOrder(order.orderId)">
+          <div class="order-meta">
+            <div class="order-id-row">
+              <span class="order-id">Order #{{ order.orderId }}</span>
+              <span class="order-status" [class.completed]="order.status === 'COMPLETED'">{{ order.status }}</span>
+            </div>
+            <span class="order-date">{{ order.orderDate | date:'MMM d, yyyy h:mm a' }}</span>
+          </div>
+          <div class="order-total-section">
+            <span class="order-total-label">Total</span>
+            <span class="order-total">${{ order.totalAmount }}</span>
+            <mat-icon class="expand-icon">{{ expandedOrder === order.orderId ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </div>
+        </div>
+
+        <div class="order-details" *ngIf="expandedOrder === order.orderId">
+
+          <div class="detail-section" *ngIf="order.items && order.items.length > 0">
+            <h3 class="detail-heading">Items ({{ order.items.length }})</h3>
+            <div class="detail-list">
+              <div class="detail-row" *ngFor="let item of order.items">
+                <img [src]="item.imageUrl" class="detail-thumb" loading="lazy">
+                <div class="detail-info">
+                  <span class="detail-title">{{ item.filmTitle }}</span>
+                  <span class="detail-meta">{{ item.quantity }} &times; ${{ item.unitPrice }}</span>
+                </div>
+                <span class="detail-amount">${{ item.subtotal }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section" *ngIf="order.rentals && order.rentals.length > 0">
+            <h3 class="detail-heading">Rentals ({{ order.rentals.length }})</h3>
+            <div class="detail-list">
+              <div class="detail-row" *ngFor="let r of order.rentals">
+                <img [src]="r.imageUrl" class="detail-thumb" loading="lazy">
+                <div class="detail-info">
+                  <span class="detail-title">{{ r.filmTitle }}</span>
+                  <span class="detail-meta">Rented {{ r.rentalDate | date:'MMM d, yyyy' }}</span>
+                </div>
+                <span class="rental-badge" [class.active]="r.active" [class.returned]="!r.active">
+                  {{ r.active ? 'Active' : 'Returned' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

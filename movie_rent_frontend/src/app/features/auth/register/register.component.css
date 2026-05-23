@@ -1,0 +1,136 @@
+.register-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 52px);
+  background: #fafafa;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 40px 36px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+.register-title {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+}
+
+.register-subtitle {
+  margin: 0 0 28px 0;
+  font-size: 13px;
+  color: #888;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+.field-input {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  font-size: 14px;
+  color: #222;
+  background: #fff;
+  outline: none;
+}
+
+.field-input:focus {
+  border-color: #666;
+}
+
+.field-input::placeholder {
+  color: #bbb;
+}
+
+.field-input.ng-invalid.ng-touched {
+  border-color: #ecc;
+  background: #fdf5f5;
+}
+
+.field-error {
+  font-size: 11px;
+  color: #c33;
+}
+
+.error-msg {
+  font-size: 12px;
+  color: #c33;
+  padding: 8px 12px;
+  border: 1px solid #ecc;
+  background: #fdf5f5;
+}
+
+.success-msg {
+  font-size: 12px;
+  color: #2e7d32;
+  padding: 8px 12px;
+  border: 1px solid #c8e6c9;
+  background: #e8f5e9;
+  text-align: center;
+}
+
+.register-btn {
+  height: 42px;
+  border: none;
+  border-radius: 0;
+  background: #333;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.register-btn:hover:not(:disabled) {
+  background: #000;
+}
+
+.register-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.register-link {
+  margin: 20px 0 0 0;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+}
+
+.register-link a {
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .register-wrapper { padding: 0 12px; }
+  .register-card { padding: 28px 20px; }
+  .register-title { font-size: 19px; }
+}

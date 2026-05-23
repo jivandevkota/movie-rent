@@ -1,15 +1,32 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { environment } from "src/environments/environment";
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs";
+import {environment} from "src/environments/environment";
 
 @Injectable(
-    {providedIn: 'root'}
+  {providedIn: 'root'}
 )
 
-export class PublicService{
-    private readonly url = environment.apiUrl;
-    constructor(private http: HttpClient) {}
+export class PublicService {
+  private readonly url = environment.apiUrl;
+
+  constructor(private http: HttpClient) {
+  }
+
+
+  login(email: string, password: string): Observable<any> {
+      return this.http.post<any>(
+        `${this.url}/auth/login`, { email, password }
+      );
+  }
+
+  isLoggedIn(): boolean {
+    return localStorage.getItem('customer') !== null;
+  }
+
+  logout(): void {
+    localStorage.removeItem('customer');
+  }
 
   getAllCategory(): Observable<any> {
     return this.http.get<any>(
@@ -18,7 +35,7 @@ export class PublicService{
   }
 
   getFilms(page: number): Observable<any> {
-     return this.http.get<any>(
+    return this.http.get<any>(
       `${this.url}/films?page=${page}&size=20`
     );
   }
@@ -43,12 +60,37 @@ export class PublicService{
     );
   }
 
-  getFilmDetails(
-    filmId: number
-  ): Observable<any> {
-
+  getCustomerRentals(customerId: number): Observable<any> {
     return this.http.get<any>(
-      `${this.url}/films/${filmId}`
+      `${this.url}/customers/${customerId}/rentals`
     );
+  }
+
+  rentFilm(customerId: number, filmId: number): Observable<any> {
+    return this.http.post<any>(`${this.url}/customers/${customerId}/rentals`, { filmId });
+  }
+
+  returnFilm(customerId: number, rentalId: number): Observable<any> {
+    return this.http.put<any>(`${this.url}/customers/${customerId}/rentals/${rentalId}/return`, {});
+  }
+
+  register(firstName: string, lastName: string, email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.url}/auth/register`, { firstName, lastName, email, password });
+  }
+
+  getFilmDetails(filmId: number): Observable<any> {
+    return this.http.get<any>(`${this.url}/films/${filmId}`);
+  }
+
+  getActor(actorId: number): Observable<any> {
+    return this.http.get<any>(`${this.url}/actors/${actorId}`);
+  }
+
+  getCustomerProfile(customerId: number): Observable<any> {
+    return this.http.get<any>(`${this.url}/customers/${customerId}/profile`);
+  }
+
+  getPopularFilms(): Observable<any> {
+    return this.http.get<any>(`${this.url}/films/popular`);
   }
 }

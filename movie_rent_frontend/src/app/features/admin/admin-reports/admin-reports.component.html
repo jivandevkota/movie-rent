@@ -1,0 +1,126 @@
+<div class="page-container">
+  <button class="back-btn" routerLink="/admin">
+    <mat-icon>arrow_back</mat-icon>
+    <span>Back to Dashboard</span>
+  </button>
+  <h1 class="page-title">Reports</h1>
+  <p class="page-subtitle">Revenue, popular films, customer insights</p>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+    <p>Loading reports...</p>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <div class="report-grid">
+
+      <!-- Monthly Revenue -->
+      <div class="report-card">
+        <div class="report-header">
+          <h2 class="report-title">Monthly Revenue</h2>
+        </div>
+        <div class="report-body">
+          <table class="report-table">
+            <tr *ngFor="let row of monthlyRevenue">
+              <td style="font-weight:600;">{{ row.month }}</td>
+              <td>${{ row.revenue }}</td>
+            </tr>
+            <tr *ngIf="monthlyRevenue.length === 0"><td colspan="2" class="empty-cell">No data</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Top 10 Films -->
+      <div class="report-card">
+        <div class="report-header">
+          <h2 class="report-title">Top 10 Films</h2>
+        </div>
+        <div class="report-body">
+          <div class="bar-list" *ngIf="topFilms.length > 0">
+            <div class="bar-row" *ngFor="let row of topFilms; let i = index">
+              <span class="bar-rank">#{{ i + 1 }}</span>
+              <span class="bar-label">{{ row.filmTitle }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="getFilmBarWidth(row.rentalCount)"></div>
+              </div>
+              <span class="bar-value">{{ row.rentalCount }}</span>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="topFilms.length === 0">No data</div>
+        </div>
+      </div>
+
+      <!-- Revenue by Rating -->
+      <div class="report-card">
+        <div class="report-header">
+          <h2 class="report-title">Revenue by Rating</h2>
+        </div>
+        <div class="report-body">
+          <table class="report-table">
+            <tr *ngFor="let row of revenueByRating">
+              <td><span class="rating-tag">{{ row.rating }}</span></td>
+              <td>${{ row.revenue }}</td>
+            </tr>
+            <tr *ngIf="revenueByRating.length === 0"><td colspan="2" class="empty-cell">No data</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rentals by Month -->
+      <div class="report-card">
+        <div class="report-header">
+          <h2 class="report-title">Rentals by Month</h2>
+        </div>
+        <div class="report-body">
+          <table class="report-table">
+            <tr *ngFor="let row of rentalsByMonth">
+              <td style="font-weight:600;">{{ row.month }}</td>
+              <td>{{ row.count }} rentals</td>
+            </tr>
+            <tr *ngIf="rentalsByMonth.length === 0"><td colspan="2" class="empty-cell">No data</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Category Performance -->
+      <div class="report-card">
+        <div class="report-header">
+          <h2 class="report-title">Category Revenue</h2>
+        </div>
+        <div class="report-body">
+          <div class="bar-list" *ngIf="categoryPerformance.length > 0">
+            <div class="bar-row" *ngFor="let row of categoryPerformance">
+              <span class="bar-label" style="min-width:70px;">{{ row.category }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="getBarWidth(row.revenue)"></div>
+              </div>
+              <span class="bar-value">${{ row.revenue }}</span>
+            </div>
+          </div>
+          <div class="empty-state" *ngIf="categoryPerformance.length === 0">No data</div>
+        </div>
+      </div>
+
+      <!-- Top Customers -->
+      <div class="report-card">
+        <div class="report-header">
+          <h2 class="report-title">Top 10 Customers</h2>
+        </div>
+        <div class="report-body">
+          <table class="report-table">
+            <tr *ngFor="let row of topCustomers; let i = index">
+              <td class="rank-td">#{{ i + 1 }}</td>
+              <td>
+                <span class="customer-name">{{ row.firstName }} {{ row.lastName }}</span>
+                <span class="customer-email">{{ row.email }}</span>
+              </td>
+              <td class="count-td">{{ row.rentalCount }} rentals</td>
+            </tr>
+            <tr *ngIf="topCustomers.length === 0"><td colspan="3" class="empty-cell">No data</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+</div>

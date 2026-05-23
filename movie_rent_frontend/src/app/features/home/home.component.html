@@ -1,109 +1,81 @@
-<mat-drawer-container class="container">
+<div class="home">
 
-  <!-- SIDEBAR -->
-  <mat-drawer mode="side" opened class="sidebar">
-    <mat-nav-list class="nav-list">
-
-      <a mat-list-item class="category-item" [class.active]="selectedCategory === null" (click)="loadFilms()">
-        <mat-icon class="nav-icon">movie_filter</mat-icon>
-        <span class="nav-label">All Movies</span>
-      </a>
-
-      <div class="nav-divider"></div>
-
-      <a mat-list-item class="category-item" *ngFor="let category of categories" [class.active]="selectedCategory === category.id" (click)="loadByCategory(category.id)">
-        <mat-icon class="nav-icon">local_movies</mat-icon>
-        <span class="nav-label">{{ category.name }}</span>
-      </a>
-
-    </mat-nav-list>
-  </mat-drawer>
-
-  <!-- MAIN CONTENT -->
-  <mat-drawer-content class="main-content">
-
-    <div class="content-wrapper">
-
-      <!-- CENTERED BIG SEARCH -->
-      <div class="search-container">
-        <div class="search-box">
-          <mat-icon class="search-icon">search</mat-icon>
-          <input type="text" class="search-input" placeholder="Search movies by title..."
-            [(ngModel)]="searchText" (keyup.enter)="searchFilms()">
-          <button mat-flat-button color="primary" class="search-btn" (click)="searchFilms()">Search</button>
-        </div>
+  <!-- TOP HEADER -->
+  <div class="top-header">
+    <div class="top-inner">
+      <h1 class="logo">MovieRent</h1>
+      <div class="top-search">
+        <input type="text" placeholder="Search films..." [(ngModel)]="searchText" (keyup.enter)="searchFilms()">
+        <button (click)="searchFilms()">Search</button>
       </div>
-      <div>
-        <span>Search: {{searchText}} </span>
-        <hr>
-      </div>
-      <!-- RESULTS COUNT -->
-      <div class="results-bar" *ngIf="totalElements > 0">
-        <span class="results-text">Showing {{ films.length }} of {{ totalElements }} films</span>
-      </div>
-
-      <!-- MOVIES GRID: Light, no heavy cards -->
-      <div class="movie-grid" *ngIf="films.length > 0">
-        <div class="movie-item" *ngFor="let film of films" (click)="openFilmDetails(film.filmId)">
-          <div class="image-wrapper">
-            <img [src]="film.imageUrl" [alt]="film.title" loading="lazy">
-            <div class="hover-overlay">
-              <mat-icon>visibility</mat-icon>
-              <span>View Details</span>
-            </div>
-          </div>
-          <div class="movie-info">
-            <div class="movie-meta">
-              <span class="film-id">#{{ film.filmId }}</span>
-              <span class="category-badge">{{ film.categoryName || 'Movie' }}</span>
-            </div>
-            <h3 class="movie-title">{{ film.title }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <!-- EMPTY -->
-      <div class="empty-state" *ngIf="films.length === 0">
-        <mat-icon class="empty-icon">movie</mat-icon>
-        <p>No movies found</p>
-      </div>
-
-      <!-- PAGINATION: Light, thin arrows, white hover -->
-      <div class="pagination-wrapper" *ngIf="totalPages > 1">
-        <div class="pagination-controls">
-
-          <button mat-icon-button class="page-btn" (click)="firstPage()" [disabled]="page === 0">
-            <mat-icon>keyboard_double_arrow_left</mat-icon>
-          </button>
-
-          <button mat-icon-button class="page-btn" (click)="prevPage()" [disabled]="page === 0">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
-
-          <div class="page-info">
-            <span class="page-label">Page</span>
-            <span class="page-current">{{ page + 1 }}</span>
-            <span class="page-separator">of</span>
-            <span class="page-total">{{ totalPages }}</span>
-          </div>
-
-          <div class="goto-section">
-            <span class="goto-label">Go to</span>
-            <input type="number" class="goto-input" min="1" [max]="totalPages" [(ngModel)]="gotoPageNumber">
-            <button mat-stroked-button class="goto-btn" (click)="goToPage()">Go</button>
-          </div>
-
-          <button mat-icon-button class="page-btn" (click)="nextPage()" [disabled]="page + 1 >= totalPages">
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-
-          <button mat-icon-button class="page-btn" (click)="lastPage()" [disabled]="page + 1 >= totalPages">
-            <mat-icon>keyboard_double_arrow_right</mat-icon>
-          </button>
-
-        </div>
-      </div>
-
     </div>
-  </mat-drawer-content>
-</mat-drawer-container>
+  </div>
+
+  <!-- CATEGORY PILLS -->
+  <div class="pills">
+    <button class="pill" [class.active]="selectedCategory === null" (click)="loadFilms()">All</button>
+    <button class="pill" *ngFor="let cat of categories" [class.active]="selectedCategory === cat.id" (click)="loadByCategory(cat.id)">{{ cat.name }}</button>
+  </div>
+
+  <!-- MOST RENTED CAROUSEL -->
+  <div class="carousel-wrap" *ngIf="popularFilms.length > 0 && currentMode === 'all'">
+    <h2 class="row-title">Most Rented</h2>
+    <div class="carousel">
+      <div class="carousel-track">
+        <div class="carousel-item" *ngFor="let f of popularFilms; let i = index" (click)="openFilmDetails(f.filmId)">
+          <img [src]="f.imageUrl" [alt]="f.title" loading="lazy">
+          <div class="carousel-item-info">
+            <span class="carousel-item-title">{{ f.title }}</span>
+          </div>
+        </div>
+        <div class="carousel-item" *ngFor="let f of popularFilms" (click)="openFilmDetails(f.filmId)">
+          <img [src]="f.imageUrl" [alt]="f.title" loading="lazy">
+          <div class="carousel-item-info">
+            <span class="carousel-item-title">{{ f.title }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILM GALLERY -->
+  <div class="gallery">
+    <div class="gallery-header">
+      <h2 class="gallery-title">Browse</h2>
+      <span class="gallery-count" *ngIf="totalElements > 0">{{ films.length }} of {{ totalElements }}</span>
+    </div>
+
+    <div class="gallery-grid" *ngIf="films.length > 0">
+      <div class="gallery-item" *ngFor="let film of films" (click)="openFilmDetails(film.filmId)">
+        <div class="gallery-img">
+          <img [src]="film.imageUrl" [alt]="film.title" loading="lazy">
+          <div class="gallery-overlay">
+            <mat-icon>play_arrow</mat-icon>
+          </div>
+        </div>
+        <div class="gallery-info">
+          <span class="gallery-cat" [ngStyle]="categoryStyle(film.categoryName)">{{ film.categoryName || 'Movie' }}</span>
+          <h3 class="gallery-film-title">{{ film.title }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="films.length === 0">
+      <p>No movies found</p>
+    </div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="firstPage()" [disabled]="page === 0"><mat-icon>first_page</mat-icon></button>
+      <button (click)="prevPage()" [disabled]="page === 0"><mat-icon>chevron_left</mat-icon></button>
+      <span>{{ page+1 }}/{{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="page+1 >= totalPages"><mat-icon>chevron_right</mat-icon></button>
+      <button (click)="lastPage()" [disabled]="page+1 >= totalPages"><mat-icon>last_page</mat-icon></button>
+      <div class="p-goto">
+        <span class="p-goto-label">Go</span>
+        <input type="number" class="p-goto-input" min="1" [max]="totalPages" [(ngModel)]="gotoPageNumber">
+        <button class="p-goto-btn" (click)="goToPage()">Go</button>
+      </div>
+    </div>
+  </div>
+
+</div>

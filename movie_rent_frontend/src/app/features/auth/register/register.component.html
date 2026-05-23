@@ -1,0 +1,65 @@
+<div class="register-wrapper">
+  <div class="register-card">
+    <h1 class="register-title">Create Account</h1>
+    <p class="register-subtitle">Enter your details to get started</p>
+
+    <form (ngSubmit)="register()" class="register-form" #regForm="ngForm">
+
+      <div class="field-group">
+        <label class="field-label" for="firstName">First Name</label>
+        <input type="text" id="firstName" class="field-input"
+          [(ngModel)]="firstName" name="firstName" #firstNameInput="ngModel"
+          placeholder="e.g. John" required>
+        <span class="field-error" *ngIf="firstNameInput.invalid && firstNameInput.touched">
+          First name is required
+        </span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="lastName">Last Name</label>
+        <input type="text" id="lastName" class="field-input"
+          [(ngModel)]="lastName" name="lastName" #lastNameInput="ngModel"
+          placeholder="e.g. Doe" required>
+        <span class="field-error" *ngIf="lastNameInput.invalid && lastNameInput.touched">
+          Last name is required
+        </span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="email">Email</label>
+        <input type="email" id="email" class="field-input"
+          [(ngModel)]="email" name="email" #emailInput="ngModel"
+          placeholder="e.g. john.doe@example.com" required email>
+        <span class="field-error" *ngIf="emailInput.invalid && emailInput.touched">
+          Valid email is required
+        </span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="password">Password</label>
+        <input type="password" id="password" class="field-input"
+          [(ngModel)]="password" name="password" #passwordInput="ngModel"
+          placeholder="Create a password" required minlength="3">
+        <span class="field-error" *ngIf="passwordInput.invalid && passwordInput.touched">
+          Password must be at least 3 characters
+        </span>
+      </div>
+
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+      <div class="success-msg" *ngIf="success">
+        Account created! You can now sign in.
+      </div>
+
+      <button type="submit" class="register-btn"
+        [disabled]="loading || regForm.invalid">
+        {{ loading ? 'Creating account...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <p class="register-link">
+      Already have an account?
+      <a (click)="goToLogin()">Sign In</a>
+    </p>
+  </div>
+</div>
