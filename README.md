@@ -4,6 +4,21 @@ A professional full-stack movie rental application built with **Spring Boot 3 + 
 
 ---
 
+## Screenshots
+
+> <!-- Replace the src paths below with your own screenshots -->
+> 
+> Create a folder `screenshots/` in the repo root and add your images there.
+
+| Customer Portal | Admin Dashboard |
+|----------------|-----------------|
+| ![Home page](screenshots/home.png) | ![Dashboard](screenshots/dashboard.png) |
+| ![Film details](screenshots/film-details.png) | ![Film management](screenshots/admin-films.png) |
+| ![Cart](screenshots/cart.png) | ![Rental management](screenshots/admin-rentals.png) |
+| ![Orders](screenshots/orders.png) | ![Reports](screenshots/admin-reports.png) |
+
+---
+
 ## Features
 
 ### Customer Portal
